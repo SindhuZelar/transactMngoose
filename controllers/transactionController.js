@@ -3,8 +3,8 @@ const Bonus = require('../models/bonus');
 const mongoose = require('mongoose');
 
 async function processTransaction(instanceId, bonusId, player) {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  const session = await mongoose.startSession({ readPreference: { mode: "primary" } });
+  session.startTransaction({ readConcern: { level: "snapshot" }, writeConcern: { w: "majority" } });
   
   const lockId = new mongoose.Types.ObjectId(); 
   try {
